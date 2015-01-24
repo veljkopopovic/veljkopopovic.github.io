@@ -1,11 +1,32 @@
-# Site settings
-title: Random developers thoughts
-email: vuvej@beotel.net
-description: > # this means to ignore newlines until "baseurl:"
-baseurl: "" # the subpath of your site, e.g. /blog/
-url: "http://veljkopopovic.github.io" # the base hostname & protocol for your site
-twitter_username: veljislav
-github_username:  veljkopopovic
+# Jekyll configuration
 
-# Build settings
-markdown: kramdown
+name: Tech thoughts
+
+# baseurl will often be '', but for a project page on gh-pages, it needs to
+# be the project name.
+# *** IMPORTANT: If your local "jekyll serve" throws errors change this to '' or
+#     run it like so: jekyll serve --baseurl=''
+baseurl: ''
+
+# This can be '' to hide the Github nav button
+github: 'veljkopopovic'
+twitter: 'veljislav'
+
+# Set this to your UA-# value, or '' to disable the block completely
+gaaccount: ''
+
+# Set this to your disqus shortname to enable comments. Note that the 'comments'
+# setting below must also be true. Individual posts can override 'comments' to
+# disable on a post-by-post basis
+disqus: 'techtoughts'
+comments: true
+
+permalink: /:year/:month/:title
+paginate: 3
+
+highlighter: pygments
+markdown: redcarpet
+redcarpet:
+  extensions: ["no_intra_emphasis", "fenced_code_blocks", "autolink", "tables", "with_toc_data"]
+
+exclude: ['README.md', 'LICENSE']
