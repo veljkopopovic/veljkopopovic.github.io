@@ -2,6 +2,7 @@
 .navbar-default .navbar-brand,
 .navbar-default .navbar-brand,
 .sidebar a,
+.author a,
 .navbar.navbar-fixed-bottom ul.nav.navbar-nav li a {
   -webkit-transition: color 0.5s; /* For Safari 3.1 to 6.0 */
   transition: color 0.5s;
@@ -39,7 +40,9 @@
     line-height: 1em;
 }
 
-.sidebar a:hover {
+.sidebar a:hover,
+.author a:hover 
+ {
     color: #3071a9;
 }
 
@@ -53,11 +56,11 @@
 }
 
 .author {
-    color: #ee4444;
+    color: #428BCA;
 }
 
 .author a {
-    color: #ee4444;
+    color: #428BCA;
 }
 .sidebar.well ul{
   list-style-type: none;
