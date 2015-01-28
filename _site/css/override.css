@@ -65,3 +65,7 @@
 .sidebar.well ul{
   list-style-type: none;
 }
+
+span.css-emoticon {
+  font-size:15px;
+}

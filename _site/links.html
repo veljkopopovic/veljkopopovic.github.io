@@ -7,11 +7,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="/js/jquery.min.js"></script>
     <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/jquery.cssemoticons.min.js"></script>
     <link href="/css/bootstrap.min.css" rel="stylesheet">
     <link href="/css/theme.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/pe-icon-social/css/pe-icon-social.css">
     <link rel="stylesheet" href="/css/pe-icon-social/css/helper.css">
+    <link rel="stylesheet" href="/css/jquery.cssemoticons.css">
     <link href="/css/override.css" rel="stylesheet">
+    <script>
+      $().ready(function () {
+        console.log('bla');
+        $('p').emoticonize({animate:false});
+      });
+    </script>
+
 </head>
 
 <body>
@@ -31,6 +40,8 @@
             <div class="sidebar well">
     <h1>Recent Posts</h1>
     <ul>
+        
+          <li><a href="/2015/01/introduction">Introduction</a></li>
         
     </ul>
 </div>

@@ -6,5 +6,21 @@
 		<link></link>
 		<atom:link href="/feed.xml" rel="self" type="application/rss+xml" />
 		
+			<item>
+				<title>Introduction</title>
+				<description>&lt;h1 id=&quot;please-allow-me-to-introduce-myself&quot;&gt;Please allow me to introduce myself&lt;/h1&gt;
+
+&lt;p&gt;It&amp;#39;s allways good to start with Rolling Stones isn&amp;#39;t it?
+So I have decided to start a blog ... Big deal? Of course not ... If someone asks me to describe myself with one sentence, I would say that I am a tech geek who is thrilled with his wife and doughter, Sweedish cars and Russian watches. I love to talk about different technologies both in hardware and software world. Focus of my work in last seven years was software, mostly real time applications and enterprise systems based upon real time data. I&amp;#39;ve been working in different technologies and within last couple of years most of my work was done in JavaScript language. At this point, I can&amp;#39;t imagine any aspect of my work wothout node.js or grunt.&lt;/p&gt;
+
+&lt;p&gt;So, I have decided to share something ... Hopefully you&amp;#39;ll find my posts usefull in everyday practice, feel free to ask questions or leave comments and tell me if you find me wrong ... &lt;/p&gt;
+
+&lt;p&gt;That&amp;#39;s it for now, will write soon :)&lt;/p&gt;
+</description>
+				<pubDate>Wed, 28 Jan 2015 22:06:00 +0100</pubDate>
+				<link>/2015/01/introduction</link>
+				<guid isPermaLink="true">/2015/01/introduction</guid>
+			</item>
+		
 	</channel>
 </rss>

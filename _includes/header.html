@@ -7,11 +7,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="{{ site.baseurl }}/js/jquery.min.js"></script>
     <script src="{{ site.baseurl }}/js/bootstrap.min.js"></script>
+    <script src="{{ site.baseurl }}/js/jquery.cssemoticons.min.js"></script>
     <link href="{{ site.baseurl }}/css/bootstrap.min.css" rel="stylesheet">
     <link href="{{ site.baseurl }}/css/theme.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ site.baseurl }}/css/pe-icon-social/css/pe-icon-social.css">
     <link rel="stylesheet" href="{{ site.baseurl }}/css/pe-icon-social/css/helper.css">
+    <link rel="stylesheet" href="{{ site.baseurl }}/css/jquery.cssemoticons.css">
     <link href="{{ site.baseurl }}/css/override.css" rel="stylesheet">
+    <script>
+      $().ready(function () {
+        console.log('bla');
+        $('p').emoticonize({animate:false});
+      });
+    </script>
+
 </head>
 
 <body>
