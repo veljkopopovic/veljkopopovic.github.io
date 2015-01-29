@@ -69,3 +69,12 @@
 span.css-emoticon {
   font-size:15px;
 }
+div.content p,
+div.sidebar.well ul li a {
+  font-size:17px;
+  line-height:1.27;
+}
+div.sidebar.well ul li a {
+  text-decoration: underline;
+}
+
