@@ -7,6 +7,126 @@
 		<atom:link href="/feed.xml" rel="self" type="application/rss+xml" />
 		
 			<item>
+				<title>AngularJS</title>
+				<description>&lt;h1 id=&quot;angularjs,-version-1&quot;&gt;AngularJS, version 1&lt;/h1&gt;
+
+&lt;p&gt;Year and a half ago or so colleague of mine has came at the office: &amp;#39;Have you seen AngularJS? Wow, it seems as a solution to lot of our problems with RT web pages ... Check it out, could be fun&amp;#39; ...
+Nice docs, nice examples, hit the road, Jack ... Once initial research was done, real problems popped out: performance, code reuse, how to clean up and so on ...&lt;/p&gt;
+
+&lt;p&gt;So, let me share some of our experiences, solutions we used and how we managed to create relatively heavy duty pages we created for our costumers. Still, there is lot more to be done and hopefully version 2 will be even better.&lt;/p&gt;
+
+&lt;p&gt;Developer should use Angular modules for implementations. Modules represents a mechanism for registering, configuration, declaration and definition of different software constructs that will be used accross one or more apps. If you need more info, please consult &lt;a href=&quot;https://docs.angularjs.org/api/ng/type/angular.Module&quot;&gt;API docs&lt;/a&gt;, details won&amp;#39;t be explained here. Most interesting module components for this post are services, factories, controllers, values and constants. Let&amp;#39;s see how they can make our life bit more easier.&lt;/p&gt;
+
+&lt;h3 id=&quot;services-vs-factories,-are-they-the-same-or-what?&quot;&gt;Services vs factories, are they the same or what?&lt;/h3&gt;
+
+&lt;p&gt;&lt;strong&gt;No, they are not the same thing.&lt;/strong&gt; Although, they do have one common property: &lt;strong&gt;both providers are singletons.&lt;/strong&gt; In other words, code written as factory or service will be executed once and only once. &lt;a href=&quot;https://docs.angularjs.org/guide/services&quot;&gt;Even Angular docs did not make my life any easier&lt;/a&gt;: guide name is &lt;strong&gt;Services&lt;/strong&gt; and once I get on &amp;#39;Creating Services&amp;#39; part, there is a &lt;code&gt;.factory&lt;/code&gt; function call. On the other hand, there is an &lt;a href=&quot;https://docs.angularjs.org/api/auto/service/$provide#service&quot;&gt;API page&lt;/a&gt; which explains instantiation mechanism. Unfortunatelly, what .service call this actually does is an empty constructor registration which can be filled using &lt;code&gt;this.some_field&lt;/code&gt; approach. This is not a good solution, and this approach should never be used due to certain performance drawbacks. Will be discussed bit later.&lt;/p&gt;
+
+&lt;p&gt;On the other hand, &lt;code&gt;.factory&lt;/code&gt; call is very usefull. Whatever you do return from registered factory function, you will get once you use factory name as dependency.&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;Angular&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;service&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;MyClass&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;MyClass&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;nx&quot;&gt;MyClass&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;prototype&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;method1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+  &lt;span class=&quot;nx&quot;&gt;MyClass&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;prototype&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;method2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;MyClass&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}]);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Declaring a JS class this way, Angular injector will replace &lt;strong&gt;MyClass&lt;/strong&gt; string in dependency list with constructor of a class. This is very usefull and will be discussed a bit leter.&lt;/p&gt;
+
+&lt;h3 id=&quot;abstractions-and-implementations&quot;&gt;Abstractions and implementations&lt;/h3&gt;
+
+&lt;p&gt;Any large scale programming will lead you to abstractions. So, where to put these within Angular system in a propper way? Ok, first things first: what is propper way for Angular? First of all, globals should be avoided as much as possible while writing Angular code. On the other side, try to use as much of Angular infrastructure to manage your code loading. So, we have to write some providers.
+Two types of providers are suitable for abstractions:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Angular constants: suitable for classes with no Angular dependency at all&lt;/li&gt;
+&lt;li&gt;Angular factories: suitable for classes with some Angular dependency&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Of course, constants and factories are suitable for implementations as well. Other providers should be used as implementations only.&lt;/p&gt;
+
+&lt;h3 id=&quot;this-is-javascript,-do-i-really-need-any-classes-and-abstractions?&quot;&gt;This is JavaScript, do I really need any classes and abstractions?&lt;/h3&gt;
+
+&lt;p&gt;&lt;strong&gt;Yes.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;JS is a dynamically typed programming language and no one can stop a programmer to add into object instance whatever he wants. Of course, there is a certain price to be paid. The most exausting explanation how V8 engine works has been written by Vyacheslav Egorov in this &lt;a href=&quot;http://mrale.ph/blog/2014/07/30/constructor-vs-objectcreate.html&quot;&gt;article&lt;/a&gt;. This is an article about V8 engine, but there is no reason to assume that the other engines will handle random property addition any better. In short: it would be nice not to introduce new object properties once you created an object. So, if you have properties in your object, initialize them in constructor and use them afterwards, do not add them on the fly. More on that you can read in this &lt;a href=&quot;http://morethanslightly.com/index.php/2014/09/cleaning-up-the-objects-on-politeness/&quot;&gt;article&lt;/a&gt;. Speaking of that, note that the most efficient way of adding properties to an object is inheritance using &lt;a href=&quot;https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/create&quot;&gt;&lt;code&gt;Object.create&lt;/code&gt;&lt;/a&gt; call.&lt;/p&gt;
+
+&lt;p&gt;In short: if you want to write some efficient code you&amp;#39;d be better do some very nice and polite abstractions and limit your key (property names) space to a finite set.&lt;/p&gt;
+
+&lt;p&gt;Speaking of abstractions let&amp;#39;s take a look how Angular controllers work and reveal some problems with current Angular implementation.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;&lt;a href=&quot;https://docs.angularjs.org/guide/controller&quot;&gt;&amp;quot;In Angular, a Controller is a JavaScript constructor function that is used to augment the Angular Scope. When a Controller is attached to the DOM via the ng-controller directive, Angular will instantiate a new Controller object, using the specified Controller&amp;#39;s constructor function. A new child scope will be available as an injectable parameter to the Controller&amp;#39;s constructor function as $scope.&amp;quot;&lt;/a&gt;. &lt;a href=&quot;http://jsfiddle.net/veljkopopovic/zc4thwwm/&quot;&gt;This is a jsfiddle with very simple controller&lt;/a&gt;&lt;/em&gt;.&lt;/p&gt;
+
+&lt;p&gt;Several things should be noticed. First, we are adding properties to the $scope object on the fly. If we have one and only one controller on the page, thats not a problem at all. But if you have, let&amp;#39;s say hunderds of them, JS engine created for each and every property added a hidden class. At the end, the page will end up with thousands of variants of $scope object. The page becomes slower and slower as amount of hidden classes rise, the JS engine optimisation won&amp;#39;t do any good (what should I optimize if I don&amp;#39;t know signature of an object, says a poor JS engine), memory consumption rises and there it goes. The price has been paid.&lt;/p&gt;
+
+&lt;p&gt;Obviously, giving a $scope object to controller developer to add properties on it was a bad idea, I hope version 2 will address this issue. What we can do? We can reduce amount of property names assigned to $scope object. Will be back on this topic in a minute.&lt;/p&gt;
+
+&lt;p&gt;Second important thing is: what about destruction? In an extreme situation, page will never be refreshed. Angular supports partials and that give us possibility to navigate through app with no page refresh at all. So, if DOM element which had a controller attached on was destroyed (for example, another partial was loaded), is there a way to clean the $scope object and release the unused memory? Yes there is. &lt;/p&gt;
+
+&lt;p&gt;Every scope will raise an &lt;code&gt;$destroy&lt;/code&gt; event. It&amp;#39;s up to developer to do some clean up once raised. Extreme discipline is required to address this one correctly. At the glance, writing cleanup piece of code is very simple (&lt;a href=&quot;http://jsfiddle.net/veljkopopovic/zc6dg1a0/&quot;&gt;fiddle&lt;/a&gt;). But this solution has a small performance issue as well: each and every instance of the controller will create new instance of a doCleanUp function again and again.&lt;/p&gt;
+
+&lt;p&gt;Would it be nice to define a structure (class) with cleanUp method (&lt;a href=&quot;http://jsfiddle.net/veljkopopovic/9c53omo8/&quot;&gt;fiddle&lt;/a&gt;) and do this automatically with no memory hit (remember the price must be paid, but let&amp;#39;s make it as small as possible)? Seems bit better. We automated destroy. If we wanted to inherit this class and do something from now on, solution is to put it global and there it goes. Let&amp;#39;s analyze this piece of code. With this approach, $scope, actually, has one and only one field added on the fly: &lt;code&gt;_ctrl&lt;/code&gt;, in a very predictive manner. So we did manage to save JS engine leaving $scope object with one and only one property. On the other hand, only thing we lost is comfort, this approach requires bit more typing. Everything we wanted to implement in controller, we should put into extension of this basic class and in HTML, values and functions will have a _ctrl prefix all around. But, we did manage to reduce fieldset of $scope class and creating new classes will do some memory consumption within JS engine but with least possible amount of junk and with maximized optimization. So far so good.&lt;/p&gt;
+
+&lt;p&gt;What about basic class and how to expose it? Globaly? If you do have several types of controllers, all of them will inherit SimpleControllerClass in similar way and we end up with bunch of global classes all around our code. Problems becomes more obvious if we wanted to use some of Angular providers with this class. So, make an Angular abstraction like something like this:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;angular&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;module&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;myApp&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[])&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;factory&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;SimpleControllerClass&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;SimpleControllerClass&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;$scope&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;nx&quot;&gt;$scope&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;_ctrl&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;$scope&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;$scope&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+      &lt;span class=&quot;nx&quot;&gt;$scope&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;$on&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;$destroy&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;doCleanUp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;bind&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;));&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;SimpleControllerClass&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;prototype&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;doCleanUp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;$scope&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;null&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+      &lt;span class=&quot;nx&quot;&gt;$scope&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;_ctrl&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;null&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;SimpleControllerClass&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}])&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;factory&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;IntervalClass&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;SimpleControllerClass&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;$interval&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;SimpleControllerClass&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;$interval&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;IntervalClass&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;$scope&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;nx&quot;&gt;SimpleControllerClass&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;call&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;$scope&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;interval&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;$interval&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;up&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;bind&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;val&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+      &lt;span class=&quot;nx&quot;&gt;IntervalClass&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;prototype&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;Object&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;create&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;SimpleControllerClass&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;prototype&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+      &lt;span class=&quot;nx&quot;&gt;IntervalClass&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;prototype&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;up&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;val&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+
+      &lt;span class=&quot;nx&quot;&gt;IntervalClass&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;prototype&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;doCleanUp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;interval&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;cancel&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;interval&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;null&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;val&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;null&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;SimpleControllerClass&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;prototype&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;doCleanUp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;call&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+   &lt;span class=&quot;p&quot;&gt;}])&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;controller&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;IntervalController&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;$scope&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;IntervalClass&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;$scope&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;IntervalClass&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;IntervalClass&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;$scope&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}]);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;a href=&quot;http://jsfiddle.net/veljkopopovic/gyypas36/&quot;&gt;fiddle&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Let&amp;#39;s take a minute to analyze this piece of code. Why factory? This way we did not create a global class, we created an Angular friendly one. &lt;code&gt;IntervalClass&lt;/code&gt; implments &lt;code&gt;SimpleControllerClass&lt;/code&gt;. Since we needed an &lt;code&gt;$interval&lt;/code&gt; Angular service, it is very comfortable to use factory to define &lt;code&gt;IntervalClass&lt;/code&gt;. Avoiding globals and making Angular friendly classes, we used every possible advantage Angular gave us regarding code organisation (dependencies management and injection).
+Every dependency reqiured by &lt;code&gt;IntervalClass&lt;/code&gt; is written in &lt;code&gt;IntervalClass&lt;/code&gt; factory definition, so all controller needs is &lt;code&gt;IntervalClass&lt;/code&gt; and &lt;code&gt;$scope&lt;/code&gt;. Note &lt;code&gt;doCleanUp&lt;/code&gt; method: we cleanly shut down interval instance(&lt;a href=&quot;https://docs.angularjs.org/api/ng/service/$interval&quot;&gt;Angular docs note: &lt;strong&gt;Intervals created by this service must be explicitly destroyed when you are finished with them.&lt;/strong&gt;&lt;/a&gt;)&lt;/p&gt;
+
+&lt;h3 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h3&gt;
+
+&lt;p&gt;So let&amp;#39;s sum up what have we done so far. Issues we were dealing within this post was
+- AngularJS friendly abstraction basics, what we need from Angular and what Angular can give to us
+- reducing memory bloat produced by controllers using abstraction mechanism&lt;/p&gt;
+
+&lt;p&gt;Abstractions has been introduced via Angular constants and factories. Main goal was to avoid multiple code execution: write abstract code once and execute it once, instantiate as much as you like. Memory bloat was avoided using reduced proprties set applied to $scope object. On the other hand, bit of more typing is required in markup, typing _ctrl prefix.&lt;/p&gt;
+
+&lt;p&gt;Will be back soon with some benchmarks.&lt;/p&gt;
+</description>
+				<pubDate>Tue, 21 Apr 2015 18:00:00 +0200</pubDate>
+				<link>/2015/04/angular</link>
+				<guid isPermaLink="true">/2015/04/angular</guid>
+			</item>
+		
+			<item>
 				<title>Introduction</title>
 				<description>&lt;h1 id=&quot;please-allow-me-to-introduce-myself&quot;&gt;Please allow me to introduce myself&lt;/h1&gt;
 
@@ -15,7 +135,7 @@ So I have decided to start a blog ... Big deal? Of course not ... If someone ask
 
 &lt;p&gt;So, I have decided to share something ... Hopefully you&amp;#39;ll find my posts usefull in everyday practice, feel free to ask questions or leave comments and tell me if you find me wrong ... &lt;/p&gt;
 
-&lt;p&gt;That&amp;#39;s it for now, will write soon :)&lt;/p&gt;
+&lt;p&gt;That&amp;#39;s it for now, will write soon :D&lt;/p&gt;
 </description>
 				<pubDate>Wed, 28 Jan 2015 22:06:00 +0100</pubDate>
 				<link>/2015/01/introduction</link>

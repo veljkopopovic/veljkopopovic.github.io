@@ -27,12 +27,12 @@
 }
 
 .sidebar h1 {
-    color: #428BCA;
+    color: #333;
     font-size: 1.3em;
 }
 
 .sidebar a {
-    color: #5E5E5E;
+    color: #333;
 }
 
 .sidebar li {
@@ -43,7 +43,7 @@
 .sidebar a:hover,
 .author a:hover 
  {
-    color: #3071a9;
+    color: #333;
 }
 
 .container-left {
@@ -51,7 +51,7 @@
 }
 
 .well h1 {
-    color: #428BCA;
+    color: #333;
     font-size: 1.3em;
 }
 
@@ -70,11 +70,27 @@ span.css-emoticon {
   font-size:15px;
 }
 div.content p,
+div.article p,
 div.sidebar.well ul li a {
+  color:#333;
   font-size:17px;
   line-height:1.27;
 }
-div.sidebar.well ul li a {
+
+a {
   text-decoration: underline;
 }
 
+a {
+  color:#333;
+}
+
+a.navbar-brand {
+  text-decoration: none;
+}
+
+div.content h1,
+div.post-content h1
+ {
+  margin-bottom:40px;
+}
