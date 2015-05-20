@@ -1,10 +1,9 @@
 ---
 layout: post
-title: "AngularJS"
-date: 2015-04-21 17:00:00 +0100
-comments: false
+title: "Abstractions with Angular"
+date: 2015-05-20 09:00:00 +0100
+comments: true
 ---
-# AngularJS, version 1
 
 Year and a half ago or so colleague of mine has came at the office: 'Have you seen AngularJS? Wow, it seems as a solution to lot of our problems with RT web pages ... Check it out, could be fun' ...
 Nice docs, nice examples, hit the road, Jack ... Once initial research was done, real problems popped out: performance, code reuse, how to clean up and so on ...
