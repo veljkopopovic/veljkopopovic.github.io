@@ -31,3 +31,4 @@ redcarpet:
 gaaccount: 'UA-58929868-1'
 
 exclude: ['README.md', 'LICENSE']
+gems: ['jemoji']

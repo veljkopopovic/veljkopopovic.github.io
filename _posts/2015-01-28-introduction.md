@@ -12,4 +12,4 @@ So I have decided to start a blog ... Big deal? Of course not ... If someone ask
 
 So, I have decided to share something ... Hopefully you'll find my posts usefull in everyday practice, feel free to ask questions or leave comments and tell me if you find me wrong ... 
 
-That's it for now, will write soon :D
+That's it for now, will write soon :smile:
