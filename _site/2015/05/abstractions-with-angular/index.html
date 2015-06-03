@@ -38,6 +38,8 @@
         
           <li><a href="/2015/01/introduction">Introduction</a></li>
         
+          <li><a href="/2015/01/grunt">Grunting from command line</a></li>
+        
     </ul>
 </div>
 
@@ -74,7 +76,7 @@ Nice docs, nice examples, hit the road, Jack ... Once initial research was done,
 
 <h3 id="services-vs-factories,-are-they-the-same-or-what?">Services vs factories, are they the same or what?</h3>
 
-<p><strong>No, they are not the same thing.</strong> Although, they do have one common property: <strong>both providers are singletons.</strong> In other words, code written as factory or service will be executed once and only once. <a href="https://docs.angularjs.org/guide/services">Even Angular docs did not make my life any easier</a>: guide name is <strong>Services</strong> and once I get on &#39;Creating Services&#39; part, there is a <code>.factory</code> function call. On the other hand, there is an <a href="https://docs.angularjs.org/api/auto/service/$provide#service">API page</a> which explains instantiation mechanism. Unfortunatelly, what .service call this actually does is an empty constructor registration which can be filled using <code>this.some_field</code> approach. This is not a good solution, and this approach should never be used due to certain performance drawbacks. Will be discussed bit later.</p>
+<p><strong>No, they are not the same thing.</strong> Although, they do have one common property: <strong>both providers are singletons.</strong> In other words, code written as factory or service will be executed once and only once. <a href="https://docs.angularjs.org/guide/services">Even Angular docs did not make my life any easier</a>: guide name is <strong>Services</strong> and once I get on &#39;Creating Services&#39; part, there is a <code>.factory</code> function call. On the other hand, there is an <a href="https://docs.angularjs.org/api/auto/service/$provide#service">API page</a> which explains instantiation mechanism. Unfortunatelly, what .service call actually does is an empty constructor registration which can be filled using <code>this.some_field</code> approach. This is not a good solution, and this approach should never be used due to certain performance drawbacks. Will be discussed bit later.</p>
 
 <p>On the other hand, <code>.factory</code> call is very usefull. Whatever you do return from registered factory function, you will get once you use factory name as dependency.</p>
 <div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">Angular</span><span class="p">.</span><span class="nx">service</span> <span class="p">(</span><span class="s1">&#39;MyClass&#39;</span><span class="p">,</span> <span class="p">[</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>

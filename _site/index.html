@@ -38,6 +38,8 @@
         
           <li><a href="/2015/01/introduction">Introduction</a></li>
         
+          <li><a href="/2015/01/grunt">Grunting from command line</a></li>
+        
     </ul>
 </div>
 
@@ -73,7 +75,7 @@ Nice docs, nice examples, hit the road, Jack ... Once initial research was done,
 
 <h3 id="services-vs-factories,-are-they-the-same-or-what?">Services vs factories, are they the same or what?</h3>
 
-<p><strong>No, they are not the same thing.</strong> Although, they do have one common property: <strong>both providers are singletons.</strong> In other words, code written as factory or service will be executed once and only once. <a href="https://docs.angularjs.org/guide/services">Even Angular docs did not make my life any easier</a>: guide name is <strong>Services</strong> and once I get on &#39;Creating Services&#39; part, there is a <code>.factory</code> function call. On the other hand, there is an <a href="https://docs.angularjs.org/api/auto/service/$provide#service">API page</a> which explains instantiation mechanism. Unfortunatelly, what .service call this actually does is an empty constructor registration which can be filled using <code>this.some_field</code> approach. This is not a good solution, and this approach should never be used due to certain performance drawbacks. Will be discussed bit later.</p>
+<p><strong>No, they are not the same thing.</strong> Although, they do have one common property: <strong>both providers are singletons.</strong> In other words, code written as factory or service will be executed once and only once. <a href="https://docs.angularjs.org/guide/services">Even Angular docs did not make my life any easier</a>: guide name is <strong>Services</strong> and once I get on &#39;Creating Services&#39; part, there is a <code>.factory</code> function call. On the other hand, there is an <a href="https://docs.angularjs.org/api/auto/service/$provide#service">API page</a> which explains instantiation mechanism. Unfortunatelly, what .service call actually does is an empty constructor registration which can be filled using <code>this.some_field</code> approach. This is not a good solution, and this approach should never be used due to certain performance drawbacks. Will be discussed bit later.</p>
 
 <p>On the other hand, <code>.factory</code> call is very usefull. Whatever you do return from registered factory function, you will get once you use factory name as dependency.</p>
 <div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">Angular</span><span class="p">.</span><span class="nx">service</span> <span class="p">(</span><span class="s1">&#39;MyClass&#39;</span><span class="p">,</span> <span class="p">[</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
@@ -192,6 +194,31 @@ So I have decided to start a blog ... Big deal? Of course not ... If someone ask
 <p>So, I have decided to share something ... Hopefully you&#39;ll find my posts usefull in everyday practice, feel free to ask questions or leave comments and tell me if you find me wrong ... </p>
 
 <p>That&#39;s it for now, will write soon <img class='emoji' title=':smile:' alt=':smile:' src='https://assets.github.com/images/icons/emoji/unicode/1f604.png' height='20' width='20' align='absmiddle' /></p>
+
+        </div>
+    </div>
+</div>
+
+<div class="article">
+    <div class="well">
+        <h1><a href="/2015/01/grunt">Jan 28, 2015 - Grunting from command line</a></h1>
+        
+        <div class="content">
+            <h1 id="grunting-around">Grunting around</h1>
+
+<p>Have you ever tried <a href="http://gruntjs.com/">Grunt</a>? Oh, you should give it a try, it&#39;s awesome. Once you catch up with basics, how to configure tasks and run grunt file, it will become very usefull tool. Simple, configurable with large community, lot of plugins (they call them tasks) ... Basically, one can do almost anything with grunt.</p>
+
+<p>Let me consider very simple task: you want to develop some JavaScript web component. So, once you&#39;re satisfied how code looks, run jshint, concat all files into one in given order and do minify concated file. Let&#39;s make it simple, we could complicate it with much more tasks, but this, simple three-task program will suffice. Oh, I said program? Yes, indeed it is ... So, what do you do? Since you know about grunt, you will write a simple grunt file, something like this:</p>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">///TODO</span>
+</code></pre></div>
+<p>As you can see from code, we used several grunt plugins ///TODO:list them, so all we have to do is to create a package.json and <code>npm install --save</code> those files and here we go, run grunt and that&#39;s it. At this point it is natural to ask: Why do I have to create package.json, I am not developing node module? Answer is simple: with no package.json you will be unable to persist which packages should be used and there will be no way to pass this project to any other developer. Other developer will have to do <code>npm install</code> before running <code>grunt</code>. Still seems bit itchy if you ask me. Let me remind you: we are trying to produce a web component, not a node module. Ok, so you decide to let it be: you do create package.json with requirements and you do instruct other team members to do npm install before grunt. Later on, you get another project, new web component do develop. What you can do: copy Gruntfile.js and reconfigure it and, yes, you have to, <code>npm init &amp;&amp; npm install --save same_requirements</code>. After a while, you end up with hundred web components and hundred installs of quite same npm modules and hundred copies of quite same grunfile with bit different settings, most often with different file lists you want to concat and so on. And you decide do add something like concat separator (for example, put the original file name in concated file before everything, in comment).
+Conclusion: it&#39;s not as reusable as we would like ...</p>
+
+<p>At this point, most developers will take one of these paths:  let it be, and do update each and every grunt file you have or simply give up grunt and try to find something bit better. One way or another, one problem remains: your job becomes less automated then expected.</p>
+
+<p>There is a third way: why don&#39;t we reduce problem to a minimal set of data required by grunt tasks (configurations) on one side and grunt task and grunt requirements on the other. A bit of juggling with nodejs, grunt, one new tool project and you will end up as happy as possible and will keep on grunting around.</p>
+
+<h3 id="grunt-programs">Grunt programs</h3>
 
         </div>
     </div>

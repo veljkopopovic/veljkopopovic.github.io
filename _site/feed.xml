@@ -17,7 +17,7 @@ Nice docs, nice examples, hit the road, Jack ... Once initial research was done,
 
 &lt;h3 id=&quot;services-vs-factories,-are-they-the-same-or-what?&quot;&gt;Services vs factories, are they the same or what?&lt;/h3&gt;
 
-&lt;p&gt;&lt;strong&gt;No, they are not the same thing.&lt;/strong&gt; Although, they do have one common property: &lt;strong&gt;both providers are singletons.&lt;/strong&gt; In other words, code written as factory or service will be executed once and only once. &lt;a href=&quot;https://docs.angularjs.org/guide/services&quot;&gt;Even Angular docs did not make my life any easier&lt;/a&gt;: guide name is &lt;strong&gt;Services&lt;/strong&gt; and once I get on &amp;#39;Creating Services&amp;#39; part, there is a &lt;code&gt;.factory&lt;/code&gt; function call. On the other hand, there is an &lt;a href=&quot;https://docs.angularjs.org/api/auto/service/$provide#service&quot;&gt;API page&lt;/a&gt; which explains instantiation mechanism. Unfortunatelly, what .service call this actually does is an empty constructor registration which can be filled using &lt;code&gt;this.some_field&lt;/code&gt; approach. This is not a good solution, and this approach should never be used due to certain performance drawbacks. Will be discussed bit later.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;No, they are not the same thing.&lt;/strong&gt; Although, they do have one common property: &lt;strong&gt;both providers are singletons.&lt;/strong&gt; In other words, code written as factory or service will be executed once and only once. &lt;a href=&quot;https://docs.angularjs.org/guide/services&quot;&gt;Even Angular docs did not make my life any easier&lt;/a&gt;: guide name is &lt;strong&gt;Services&lt;/strong&gt; and once I get on &amp;#39;Creating Services&amp;#39; part, there is a &lt;code&gt;.factory&lt;/code&gt; function call. On the other hand, there is an &lt;a href=&quot;https://docs.angularjs.org/api/auto/service/$provide#service&quot;&gt;API page&lt;/a&gt; which explains instantiation mechanism. Unfortunatelly, what .service call actually does is an empty constructor registration which can be filled using &lt;code&gt;this.some_field&lt;/code&gt; approach. This is not a good solution, and this approach should never be used due to certain performance drawbacks. Will be discussed bit later.&lt;/p&gt;
 
 &lt;p&gt;On the other hand, &lt;code&gt;.factory&lt;/code&gt; call is very usefull. Whatever you do return from registered factory function, you will get once you use factory name as dependency.&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;Angular&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;service&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;MyClass&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
@@ -138,6 +138,29 @@ So I have decided to start a blog ... Big deal? Of course not ... If someone ask
 				<pubDate>Wed, 28 Jan 2015 22:06:00 +0100</pubDate>
 				<link>/2015/01/introduction</link>
 				<guid isPermaLink="true">/2015/01/introduction</guid>
+			</item>
+		
+			<item>
+				<title>Grunting from command line</title>
+				<description>&lt;h1 id=&quot;grunting-around&quot;&gt;Grunting around&lt;/h1&gt;
+
+&lt;p&gt;Have you ever tried &lt;a href=&quot;http://gruntjs.com/&quot;&gt;Grunt&lt;/a&gt;? Oh, you should give it a try, it&amp;#39;s awesome. Once you catch up with basics, how to configure tasks and run grunt file, it will become very usefull tool. Simple, configurable with large community, lot of plugins (they call them tasks) ... Basically, one can do almost anything with grunt.&lt;/p&gt;
+
+&lt;p&gt;Let me consider very simple task: you want to develop some JavaScript web component. So, once you&amp;#39;re satisfied how code looks, run jshint, concat all files into one in given order and do minify concated file. Let&amp;#39;s make it simple, we could complicate it with much more tasks, but this, simple three-task program will suffice. Oh, I said program? Yes, indeed it is ... So, what do you do? Since you know about grunt, you will write a simple grunt file, something like this:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;c1&quot;&gt;///TODO&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;As you can see from code, we used several grunt plugins ///TODO:list them, so all we have to do is to create a package.json and &lt;code&gt;npm install --save&lt;/code&gt; those files and here we go, run grunt and that&amp;#39;s it. At this point it is natural to ask: Why do I have to create package.json, I am not developing node module? Answer is simple: with no package.json you will be unable to persist which packages should be used and there will be no way to pass this project to any other developer. Other developer will have to do &lt;code&gt;npm install&lt;/code&gt; before running &lt;code&gt;grunt&lt;/code&gt;. Still seems bit itchy if you ask me. Let me remind you: we are trying to produce a web component, not a node module. Ok, so you decide to let it be: you do create package.json with requirements and you do instruct other team members to do npm install before grunt. Later on, you get another project, new web component do develop. What you can do: copy Gruntfile.js and reconfigure it and, yes, you have to, &lt;code&gt;npm init &amp;amp;&amp;amp; npm install --save same_requirements&lt;/code&gt;. After a while, you end up with hundred web components and hundred installs of quite same npm modules and hundred copies of quite same grunfile with bit different settings, most often with different file lists you want to concat and so on. And you decide do add something like concat separator (for example, put the original file name in concated file before everything, in comment).
+Conclusion: it&amp;#39;s not as reusable as we would like ...&lt;/p&gt;
+
+&lt;p&gt;At this point, most developers will take one of these paths:  let it be, and do update each and every grunt file you have or simply give up grunt and try to find something bit better. One way or another, one problem remains: your job becomes less automated then expected.&lt;/p&gt;
+
+&lt;p&gt;There is a third way: why don&amp;#39;t we reduce problem to a minimal set of data required by grunt tasks (configurations) on one side and grunt task and grunt requirements on the other. A bit of juggling with nodejs, grunt, one new tool project and you will end up as happy as possible and will keep on grunting around.&lt;/p&gt;
+
+&lt;h3 id=&quot;grunt-programs&quot;&gt;Grunt programs&lt;/h3&gt;
+</description>
+				<pubDate>Wed, 28 Jan 2015 22:06:00 +0100</pubDate>
+				<link>/2015/01/grunt</link>
+				<guid isPermaLink="true">/2015/01/grunt</guid>
 			</item>
 		
 	</channel>

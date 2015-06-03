@@ -60,25 +60,32 @@
         <div class="col-md-9">
           <div class="article">
             <div class="well">
-                <h1><a href="/2015/01/introduction">Jan 28, 2015 - Introduction</a></h1>
+                <h1><a href="/2015/01/grunt">Jan 28, 2015 - Grunting from command line</a></h1>
 <!--
             
 -->
             <div class="post-content">
-            <h1 id="please-allow-me-to-introduce-myself">Please allow me to introduce myself</h1>
+            <h1 id="grunting-around">Grunting around</h1>
 
-<p>It&#39;s allways good to start with Rolling Stones, isn&#39;t it?
-So I have decided to start a blog ... Big deal? Of course not ... If someone asks me to describe myself within one sentence, I would say that I am a tech geek who is thrilled with his wife and doughter, Sweedish cars and Russian watches. I love to talk about different technologies both in hardware and software world. Focus of my work in last seven years was software, mostly real time applications and enterprise systems based upon real time data. I&#39;ve been working in different technologies and within last couple of years most of my work was done in JavaScript language. At this point, I can&#39;t imagine any aspect of my work wothout node.js or grunt.</p>
+<p>Have you ever tried <a href="http://gruntjs.com/">Grunt</a>? Oh, you should give it a try, it&#39;s awesome. Once you catch up with basics, how to configure tasks and run grunt file, it will become very usefull tool. Simple, configurable with large community, lot of plugins (they call them tasks) ... Basically, one can do almost anything with grunt.</p>
 
-<p>So, I have decided to share something ... Hopefully you&#39;ll find my posts usefull in everyday practice, feel free to ask questions or leave comments and tell me if you find me wrong ... </p>
+<p>Let me consider very simple task: you want to develop some JavaScript web component. So, once you&#39;re satisfied how code looks, run jshint, concat all files into one in given order and do minify concated file. Let&#39;s make it simple, we could complicate it with much more tasks, but this, simple three-task program will suffice. Oh, I said program? Yes, indeed it is ... So, what do you do? Since you know about grunt, you will write a simple grunt file, something like this:</p>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">///TODO</span>
+</code></pre></div>
+<p>As you can see from code, we used several grunt plugins ///TODO:list them, so all we have to do is to create a package.json and <code>npm install --save</code> those files and here we go, run grunt and that&#39;s it. At this point it is natural to ask: Why do I have to create package.json, I am not developing node module? Answer is simple: with no package.json you will be unable to persist which packages should be used and there will be no way to pass this project to any other developer. Other developer will have to do <code>npm install</code> before running <code>grunt</code>. Still seems bit itchy if you ask me. Let me remind you: we are trying to produce a web component, not a node module. Ok, so you decide to let it be: you do create package.json with requirements and you do instruct other team members to do npm install before grunt. Later on, you get another project, new web component do develop. What you can do: copy Gruntfile.js and reconfigure it and, yes, you have to, <code>npm init &amp;&amp; npm install --save same_requirements</code>. After a while, you end up with hundred web components and hundred installs of quite same npm modules and hundred copies of quite same grunfile with bit different settings, most often with different file lists you want to concat and so on. And you decide do add something like concat separator (for example, put the original file name in concated file before everything, in comment).
+Conclusion: it&#39;s not as reusable as we would like ...</p>
 
-<p>That&#39;s it for now, will write soon <img class='emoji' title=':smile:' alt=':smile:' src='https://assets.github.com/images/icons/emoji/unicode/1f604.png' height='20' width='20' align='absmiddle' /></p>
+<p>At this point, most developers will take one of these paths:  let it be, and do update each and every grunt file you have or simply give up grunt and try to find something bit better. One way or another, one problem remains: your job becomes less automated then expected.</p>
+
+<p>There is a third way: why don&#39;t we reduce problem to a minimal set of data required by grunt tasks (configurations) on one side and grunt task and grunt requirements on the other. A bit of juggling with nodejs, grunt, one new tool project and you will end up as happy as possible and will keep on grunting around.</p>
+
+<h3 id="grunt-programs">Grunt programs</h3>
 
             </div>
             <div class="share-page">
 Share on
-<a href="https://twitter.com/intent/tweet?text=Introduction&url=/2015/01/introduction&via=&related=" rel="nofollow" target="_blank" title="Share on Twitter"><i class="pe-so-twitter"></i></a>
-<a href="https://facebook.com/sharer.php?u=/2015/01/introduction" rel="nofollow" target="_blank" title="Share on Facebook"><i class="pe-so-facebook"></i></a>
+<a href="https://twitter.com/intent/tweet?text=Grunting from command line&url=/2015/01/grunt&via=&related=" rel="nofollow" target="_blank" title="Share on Twitter"><i class="pe-so-twitter"></i></a>
+<a href="https://facebook.com/sharer.php?u=/2015/01/grunt" rel="nofollow" target="_blank" title="Share on Facebook"><i class="pe-so-facebook"></i></a>
 </div>
 
             
@@ -86,10 +93,8 @@ Share on
           </div>
           <div class="pagination">
               
-                <a class="btn btn-default" href="/2015/05/abstractions-with-angular" class="next">Newer Post</a>
+                <a class="btn btn-default" href="/2015/01/introduction" class="next">Newer Post</a>
               
-              
-                <a class="btn btn-default" href="/2015/01/grunt" class="previous">Older Post</a>
               
 </div>
 
